@@ -17,7 +17,8 @@ class FilterRequest extends FormRequest
     {
         return [
             'type'      => ['nullable', 'string', Rule::in(LapDataTypes::values())],
-            'driver_id' => 'nullable|integer',
+            'driver_id' => ['nullable', 'sometimes', 'array'],
+            'driver_id.*' => ['integer', 'distinct'],
             'lap_from'  => 'nullable|integer|min:1',
             'lap_to'    => 'nullable|integer|min:1|gte:lap_from',
         ];
@@ -53,7 +54,6 @@ class FilterRequest extends FormRequest
             }
         });
     }
-
 
     /**
      * @param Validator $validator

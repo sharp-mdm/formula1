@@ -26,7 +26,7 @@ class DriverFilter implements Filter
     public function handle($query, Closure $next): Builder
     {
         if (isset($this->filters['driver_id'])) {
-            $query->where('laps.driver_number', $this->filters['driver_id']);
+            $query->whereIn('laps.driver_number', $this->filters['driver_id']);
         }
 
         return $next($query);
