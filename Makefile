@@ -31,6 +31,10 @@ up:
 stop:
 	$(SAIL) stop
 
+test:
+	$(SAIL) php artisan test tests/Feature/ApiResponseTest.php
+	$(SAIL) php artisan test tests/Unit/LapRelationTest.php
+
 wait-db:
 	@while ! (docker ps | grep -q -E '$(PROJECT_DIR)-mysql-[0-9]+' && \
 			  docker volume ls | grep -q -E '$(PROJECT_DIR)_sail-mysql'); do \

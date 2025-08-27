@@ -15,6 +15,8 @@
 
 **5)** To run the import in test mode, use the command `sail php artisan schedule:test`
 
+**6)** Run the tests using `make test`
+
 ### Examples
 1) http://localhost/v1/laps?driver_id[]=81
 
