@@ -6,5 +6,8 @@ use Illuminate\Support\Collection;
 
 interface DataProvider
 {
+    /**
+     * @return Collection
+     */
     public function getData(): Collection;
 }

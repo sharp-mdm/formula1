@@ -2,33 +2,36 @@
 
 namespace App\FormulaOne\Services\API\Filters;
 
-use Closure;
 use Illuminate\Database\Query\Builder;
 
 class DriverFilter implements Filter
 {
 
-    protected array $filters;
+    /**
+     * @var array|mixed
+     */
+    protected array $driver_ids = [];
 
     /**
      * @param array $filters
      */
     public function __construct(array $filters)
     {
-        $this->filters = $filters;
+        if (!empty($filters['driver_ids'])) {
+            $this->driver_ids = $filters['driver_ids'];
+        }
     }
 
     /**
-     * @param $query
-     * @param Closure $next
+     * @param Builder $query
      * @return Builder
      */
-    public function handle($query, Closure $next): Builder
+    public function apply(Builder $query): Builder
     {
-        if (isset($this->filters['driver_id'])) {
-            $query->whereIn('laps.driver_number', $this->filters['driver_id']);
+        if (!empty($this->driver_ids)) {
+            $query->whereIn('laps.driver_number', $this->driver_ids);
         }
 
-        return $next($query);
+        return $query;
     }
 }

@@ -2,19 +2,20 @@
 
 namespace App\FormulaOne\Services\API;
 
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Collection;
 use App\FormulaOne\Models\Track\Lap;
 use Illuminate\Database\Query\Builder;
 use App\Http\Requests\LapController\FilterRequest;
-use App\FormulaOne\Services\API\Filters\TypeFilter;
-use App\FormulaOne\Services\API\Filters\DriverFilter;
-use App\FormulaOne\Services\API\Filters\LapRangeFilter;
+use App\FormulaOne\Services\API\Enums\LapDataType;
+use App\FormulaOne\Services\API\Filters\{DriverFilter, LapRangeFilter};
+use App\FormulaOne\Services\API\Aggregators\{SectorsAggregator, TotalAggregator};
+
 
 class LapFilterService implements LapFilter
 {
-    protected array $filters = [];
 
+    /**
+     * @var Builder
+     */
     protected Builder $query;
 
     public function __construct()
@@ -27,21 +28,36 @@ class LapFilterService implements LapFilter
 
     /**
      * @param FilterRequest $request
-     * @return Collection
+     * @return Builder
      */
-    public function getFilteredData(FilterRequest $request): Collection
+    public function getQuery(FilterRequest $request): Builder
     {
-        $this->filters = $request->validated();
+        $requestParams = $request->validated();
 
-        $this->query = app(Pipeline::class)
-            ->send($this->query)
-            ->through([
-                fn($query, $next) => (new TypeFilter($this->filters))->handle($query, $next),
-                fn($query, $next) => (new DriverFilter($this->filters))->handle($query, $next),
-                fn($query, $next) => (new LapRangeFilter($this->filters))->handle($query, $next),
-            ])
-            ->thenReturn();
+        $this->applyAggregator(LapDataType::fromValue($requestParams['type'] ?? null));
 
-        return $this->query->get();
+        $appliedFilters = [
+            new DriverFilter($requestParams),
+            new LapRangeFilter($requestParams),
+        ];
+
+        foreach ($appliedFilters as $filter) {
+            $this->query = $filter->apply($this->query);
+        }
+
+        return $this->query;
+    }
+
+    /**
+     * @param LapDataType $type
+     * @return void
+     */
+    protected function applyAggregator(LapDataType $type): void
+    {
+        if ($type == LapDataType::SECTORS) {
+            $this->query = (new SectorsAggregator())->apply($this->query);
+        } else {
+            $this->query = (new TotalAggregator())->apply($this->query);
+        }
     }
 }

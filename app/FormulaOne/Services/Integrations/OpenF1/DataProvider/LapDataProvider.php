@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Http;
 
 class LapDataProvider implements DataProvider
 {
+    /**
+     * @return Collection
+     */
     public function getData(): Collection
     {
         try {

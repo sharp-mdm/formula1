@@ -1,17 +1,11 @@
 <?php
 
-namespace App\FormulaOne\Services\API\Filters;
+namespace App\FormulaOne\Services\API\Aggregators;
 
 use Illuminate\Database\Query\Builder;
 
-interface Filter
+interface Aggregator
 {
-
-    /**
-     * @param array $filters
-     */
-    public function __construct(array $filters);
-
     /**
      * @param Builder $query
      * @return Builder

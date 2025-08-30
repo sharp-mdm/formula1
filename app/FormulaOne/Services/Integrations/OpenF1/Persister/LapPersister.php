@@ -2,6 +2,7 @@
 
 namespace App\FormulaOne\Services\Integrations\OpenF1\Persister;
 
+use Throwable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -22,15 +23,13 @@ class LapPersister implements Persister
         return Lap::whereIn(
             DB::raw("CONCAT(driver_number, '-', lap_number)"),
             $idPairs
-        )
-            ->get()
-            ->map(fn($lap) => $lap->driver_number . '-' . $lap->lap_number)
-            ->toArray();
+        )->get()->map(fn($lap) => $lap->driver_number . '-' . $lap->lap_number)->toArray();
     }
 
     /**
      * @param array $lapData
      * @return void
+     * @throws Throwable
      */
     public function store(array $lapData): void
     {
@@ -66,5 +65,4 @@ class LapPersister implements Persister
     {
         return $lap['driver_number'] . '-' . $lap['lap_number'];
     }
-
 }

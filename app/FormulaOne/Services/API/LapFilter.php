@@ -2,14 +2,15 @@
 
 namespace App\FormulaOne\Services\API;
 
-use Illuminate\Support\Collection;
+use Illuminate\Database\Query\Builder;
 use App\Http\Requests\LapController\FilterRequest;
 
 interface LapFilter
 {
+
     /**
      * @param FilterRequest $request
-     * @return Collection
+     * @return Builder
      */
-    public function getFilteredData(FilterRequest $request): Collection;
+    public function getQuery(FilterRequest $request): Builder;
 }

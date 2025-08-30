@@ -2,37 +2,50 @@
 
 namespace App\FormulaOne\Services\API\Filters;
 
-use Closure;
 use Illuminate\Database\Query\Builder;
 
-class LapRangeFilter
+class LapRangeFilter implements Filter
 {
-    protected array $filters;
+
+    /**
+     * @var int|mixed|null
+     */
+    protected int|null $lap_from = null;
+
+    /**
+     * @var int|mixed|null
+     */
+    protected int|null $lap_to = null;
 
     /**
      * @param array $filters
      */
     public function __construct(array $filters)
     {
-        $this->filters = $filters;
+        if (isset($this->filters['lap_from'])) {
+            $this->lap_from = $filters['lap_from'];
+        }
+        if (isset($this->filters['lap_to'])) {
+            $this->lap_to = $filters['lap_to'];
+        }
     }
 
     /**
-     * @param $query
-     * @param Closure $next
+     * @param Builder $query
      * @return Builder
      */
-    public function handle($query, Closure $next): Builder
+    public function apply(Builder $query): Builder
     {
-        if (isset($this->filters['lap_from']) && isset($this->filters['lap_to'])) {
+        if ($this->lap_from !== null && $this->lap_to !== null) {
             $query->whereBetween(
                 'lap_number',
                 [
-                    $this->filters['lap_from'],
-                    $this->filters['lap_to']]
+                    $this->lap_from,
+                    $this->lap_to
+                ]
             );
         }
 
-        return $next($query);
+        return $query;
     }
 }

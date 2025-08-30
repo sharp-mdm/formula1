@@ -5,7 +5,7 @@ namespace App\FormulaOne\Services\Integrations\OpenF1\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use App\FormulaOne\Models\Track\Lap;
-use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Facades\Validator;
 
 class LapValidator
 {
@@ -26,7 +26,7 @@ class LapValidator
         }
 
         return $laps->filter(function ($lapData) use ($rules) {
-            $validator = ValidatorFacade::make($lapData, $rules);
+            $validator = Validator::make($lapData, $rules);
 
             if ($validator->fails()) {
                 Log::error('Invalid lap data:', [
