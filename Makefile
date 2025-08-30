@@ -10,6 +10,8 @@ help:
 	@echo "  make install       - Set up the project after cloning or copying the Git repository"
 	@echo "  make up            - Run project docker containers"
 	@echo "  make stop          - Stop project docker containers"
+	@echo "  make test          - Run project tests"
+	@echo "  make import        - Run import without cron configuration"
 	@echo ""
 
 install:
@@ -20,6 +22,7 @@ install:
 	make wait-db --no-print-directory
 
 	$(SAIL) php artisan migrate
+	$(SAIL) php artisan l5-swagger:generate
 
 	@make print-link --no-print-directory
 
@@ -34,6 +37,9 @@ stop:
 test:
 	$(SAIL) php artisan test tests/Feature/ApiResponseTest.php
 	$(SAIL) php artisan test tests/Unit/LapRelationTest.php
+
+import:
+	$(SAIL) php artisan schedule:test
 
 wait-db:
 	@while ! (docker ps | grep -q -E '$(PROJECT_DIR)-mysql-[0-9]+' && \
