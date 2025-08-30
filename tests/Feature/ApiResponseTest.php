@@ -4,20 +4,19 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
-
 class ApiResponseTest extends TestCase
 {
     public function test_api_filter_driver_negative(): void
     {
-        $response = $this->getJson('/v1/laps?driver_id=81');
+        $response = $this->getJson('/api/v1/laps?driver_ids=81');
         $response->assertStatus(422);
 
         $response->assertJson([
             'success' => false,
             'message' => 'Validation errors',
             'errors'  => [
-                'driver_id' => [
-                    'The driver id field must be an array.'
+                'driver_ids' => [
+                    'The driver ids field must be an array.'
                 ]
             ]
         ]);
@@ -25,7 +24,7 @@ class ApiResponseTest extends TestCase
 
     public function test_api_filter_driver_positive(): void
     {
-        $response = $this->getJson('/v1/laps?driver_id[]=81');
+        $response = $this->getJson('/api/v1/laps?driver_ids[]=81');
         $response->assertStatus(200);
 
         $data = $response->json();
@@ -39,7 +38,7 @@ class ApiResponseTest extends TestCase
 
     public function test_api_filter_type_negative(): void
     {
-        $response = $this->getJson('/v1/laps?type=type');
+        $response = $this->getJson('/api/v1/laps?type=type');
         $response->assertStatus(422);
 
         $response->assertJson([
@@ -55,7 +54,7 @@ class ApiResponseTest extends TestCase
 
     public function test_api_filter_type_positive(): void
     {
-        $response = $this->getJson('/v1/laps?type=sectors');
+        $response = $this->getJson('/api/v1/laps?type=sectors');
         $response->assertStatus(200);
 
         $data = $response->json();
@@ -69,7 +68,7 @@ class ApiResponseTest extends TestCase
 
     public function test_api_filter_lap_negative(): void
     {
-        $response = $this->getJson('/v1/laps?lap_from=from');
+        $response = $this->getJson('/api/v1/laps?lap_from=from');
         $response->assertStatus(422);
 
         $response->assertJson([
@@ -85,7 +84,7 @@ class ApiResponseTest extends TestCase
 
     public function test_api_filter_lap_positive(): void
     {
-        $response = $this->getJson('/v1/laps?lap_from=10&lap_to=20');
+        $response = $this->getJson('/api/v1/laps?lap_from=10&lap_to=20');
         $response->assertStatus(200);
 
         $data = $response->json();
