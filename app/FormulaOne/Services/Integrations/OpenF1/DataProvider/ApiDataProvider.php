@@ -2,13 +2,14 @@
 
 namespace App\FormulaOne\Services\Integrations\OpenF1\DataProvider;
 
+use Exception;
 use Throwable;
 use JsonException;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\{Log, Http};
 
-class LapDataProvider implements DataProvider
+class ApiDataProvider implements DataProvider
 {
     /**
      * @return Collection
@@ -17,6 +18,9 @@ class LapDataProvider implements DataProvider
     {
         try {
             $response = Http::timeout(10)->get(config('formula_one.import_api_url'));
+            if ($response->status() !== Response::HTTP_OK) {
+                throw new Exception('Could not get data from API');
+            }
             return collect(json_decode($response->body(), associative: true, flags: JSON_THROW_ON_ERROR));
         } catch (JsonException $e) {
             Log::error(static::class . ' invalid JSON', ['error' => $e->getMessage()]);

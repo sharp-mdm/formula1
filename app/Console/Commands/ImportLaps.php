@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Throwable;
 use Illuminate\Console\Command;
-use App\FormulaOne\Services\Integrations\OpenF1\Importer;
 use Illuminate\Support\Facades\Log;
+use App\FormulaOne\Services\Integrations\OpenF1\Importer;
 
 class ImportLaps extends Command
 {
@@ -31,7 +31,7 @@ class ImportLaps extends Command
         try {
             app(Importer::class)->import();
         } catch (Throwable $e) {
-            $errorMessage = '"' . $this->signature . '" command error: ' . $e->getMessage();
+            $errorMessage = '"' . $this->signature . '" command error: ' . $e->getMessage() . $e->getTraceAsString();
             Log::error($errorMessage);
             $this->error($errorMessage);
             return Command::FAILURE;

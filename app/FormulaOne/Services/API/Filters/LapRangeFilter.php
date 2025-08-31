@@ -22,10 +22,10 @@ class LapRangeFilter implements Filter
      */
     public function __construct(array $filters)
     {
-        if (isset($this->filters['lap_from'])) {
+        if (isset($filters['lap_from'])) {
             $this->lap_from = $filters['lap_from'];
         }
-        if (isset($this->filters['lap_to'])) {
+        if (isset($filters['lap_to'])) {
             $this->lap_to = $filters['lap_to'];
         }
     }

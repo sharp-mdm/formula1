@@ -9,7 +9,7 @@ use App\FormulaOne\Services\Integrations\OpenF1\Persister\Persister;
 use App\FormulaOne\Services\Integrations\OpenF1\Persister\LapPersister;
 use App\FormulaOne\Services\Integrations\OpenF1\Validator\LapValidator;
 use App\FormulaOne\Services\Integrations\OpenF1\DataProvider\DataProvider;
-use App\FormulaOne\Services\Integrations\OpenF1\DataProvider\LapDataProvider;
+use App\FormulaOne\Services\Integrations\OpenF1\DataProvider\ApiDataProvider;
 
 class IntegrationServiceProvider extends ServiceProvider
 {
@@ -20,7 +20,7 @@ class IntegrationServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             DataProvider::class,
-            fn() => new LapDataProvider()
+            fn() => new ApiDataProvider()
         );
 
         $this->app->bind(
